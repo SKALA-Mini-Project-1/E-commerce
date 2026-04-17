@@ -25,13 +25,6 @@ spec:
         prometheus.io/path: /actuator/prometheus
     spec:
       priorityClassName: ecommerce-high-priority
-      initContainers:
-        - name: wait-for-payment-service
-          image: curlimages/curl:8.10.1
-          command:
-            - sh
-            - -c
-            - until curl -fsS http://payment-service:8080/actuator/health/readiness; do echo waiting for payment-service; sleep 5; done
       containers:
         - name: order-service
           image: amdp-registry.skala-ai.com/skala26a-cloud/team4-order-service:2026.04.17-v1
