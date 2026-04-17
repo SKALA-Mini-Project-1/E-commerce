@@ -1,21 +1,24 @@
 # 05.myapp-container
 
 ## 이 저장소는 무엇을 위한 실습인가?
-- 다양한 애플리케이션(Spring Boot, Vue, 정적 Frontend, Python FastAPI, Redis 연동)을 컨테이너화하고 Kubernetes에 배포하는 실습 모음입니다.
-- 디렉토리별로 기술 스택이 다르며, 공통적으로 Docker 이미지 빌드/푸시와 K8s 매니페스트 적용 흐름을 연습합니다.
+- 제품, 주문, 결제, 사용자 서비스를 중심으로 백엔드 MSA 구조를 구성하고 Kubernetes 배포 흐름을 연습하는 저장소입니다.
+- 기존 샘플 디렉토리를 재배치해 서비스 코드, 프론트엔드, 인프라 자산이 분리된 형태로 관리합니다.
 
 ## 디렉토리별 목적
-- `01.springboot`: Spring Boot 백엔드 컨테이너/Kubernetes 배포 실습
-- `02.vuejs`: Vue 3 + Vite 프런트엔드 컨테이너 배포 실습
-- `03.frontend`: 순수 HTML/CSS/JS 정적 웹 배포 기초 실습
-- `04.python`: FastAPI 서버(health/metrics 포함) 배포 실습
-- `05.ai-slim-base`: 공통 AI/Python 베이스 이미지 제작 실습
-- `06.app-with-redis`: Spring Boot + Redis Key-Value API 실습
+- `services/user-service`: 기존 사용자/지역 API를 포함한 Spring Boot 서비스
+- `services/product-service`: `user-service` 골격을 복제한 제품 서비스 스캐폴드
+- `services/order-service`: `user-service` 골격을 복제한 주문 서비스 스캐폴드
+- `services/payment-service`: `user-service` 골격을 복제한 결제 서비스 스캐폴드
+- `frontend/vue-app`: Vue 3 + Vite 프런트엔드
+- `frontend/static-web`: 정적 HTML/CSS/JS 프런트 샘플
+- `infra/databases`: MariaDB, Redis, MongoDB, PostgreSQL, Qdrant 관련 배포 자산
+- `infra/base-images`: 공통 베이스 이미지 자산
+- `archive/python-sample`: 현재 주력 구조에서 제외된 FastAPI 샘플
+- `docs`: 아키텍처/구조 문서
 
 ## 학습 가이드(추천 순서)
-- 1) `03.frontend`로 정적 웹 컨테이너 배포 흐름 익히기
-- 2) `02.vuejs`로 프런트엔드 빌드/배포 확장
-- 3) `01.springboot`로 백엔드 API + K8s 운영요소(probe, ingress, pvc) 학습
-- 4) `04.python`으로 health/metrics 기반 운영 패턴 학습
-- 5) `05.ai-slim-base`로 공통 베이스 이미지 전략 이해
-- 6) `06.app-with-redis`로 외부 스토리지(Redis) 연동 실습
+- 1) `services/user-service` 구조로 현재 Spring Boot 골격 파악
+- 2) `services/product-service`, `services/order-service`, `services/payment-service`에 도메인 코드 채우기
+- 3) `frontend/vue-app`에서 백엔드 API 연동 확장
+- 4) `infra/databases/mariadb` 기준으로 MariaDB 배포 흐름 정리
+- 5) 서비스별 `k8s/`, `kustomize/` 구조를 그대로 유지하며 배포 단위 관리
