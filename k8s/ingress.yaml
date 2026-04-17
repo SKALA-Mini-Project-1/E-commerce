@@ -1,0 +1,226 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: frontend-ingress
+  namespace: ecommerce-lab
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - mall.example.com
+      secretName: shopping-mall-tls
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /frontend
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-stable
+                port:
+                  number: 80
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 8080
+          - path: /api/products
+            pathType: Prefix
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 8080
+          - path: /api/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 8080
+          - path: /api/payments
+            pathType: Prefix
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-swagger-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /user/swagger(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: user-actuator-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /user/actuator(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: user-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: product-swagger-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /product/swagger(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: product-actuator-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /product/actuator(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: product-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: order-swagger-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /order/swagger(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: order-actuator-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /order/actuator(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payment-swagger-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /payment/swagger(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payment-actuator-ingress
+  namespace: ecommerce-lab
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: mall.example.com
+      http:
+        paths:
+          - path: /payment/actuator(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: payment-service
+                port:
+                  number: 8080
