@@ -1,0 +1,59 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mariadb-init
+  namespace: ecommerce
+spec:
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: mariadb-init
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mariadb-init
+          image: mariadb:11.4
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-lab-secret
+                  key: MARIADB_ROOT_PASSWORD
+            - name: MARIADB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-lab-secret
+                  key: MARIADB_USERNAME
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ecommerce-lab-secret
+                  key: MARIADB_PASSWORD
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              until mariadb-admin ping -hmariadb -P3306 -uroot -p"${MARIADB_ROOT_PASSWORD}" --silent; do
+                echo waiting for mariadb
+                sleep 5
+              done
+
+              mariadb -hmariadb -P3306 -uroot -p"${MARIADB_ROOT_PASSWORD}" <<SQL
+              CREATE DATABASE IF NOT EXISTS user_service_db;
+              CREATE DATABASE IF NOT EXISTS product_service_db;
+              CREATE DATABASE IF NOT EXISTS order_service_db;
+              CREATE DATABASE IF NOT EXISTS payment_service_db;
+
+              CREATE USER IF NOT EXISTS '${MARIADB_USERNAME}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';
+              ALTER USER '${MARIADB_USERNAME}'@'%' IDENTIFIED BY '${MARIADB_PASSWORD}';
+
+              GRANT ALL PRIVILEGES ON user_service_db.* TO '${MARIADB_USERNAME}'@'%';
+              GRANT ALL PRIVILEGES ON product_service_db.* TO '${MARIADB_USERNAME}'@'%';
+              GRANT ALL PRIVILEGES ON order_service_db.* TO '${MARIADB_USERNAME}'@'%';
+              GRANT ALL PRIVILEGES ON payment_service_db.* TO '${MARIADB_USERNAME}'@'%';
+
+              FLUSH PRIVILEGES;
+              SQL

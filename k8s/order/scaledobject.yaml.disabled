@@ -1,0 +1,17 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: order-service
+  namespace: ecommerce-lab
+spec:
+  scaleTargetRef:
+    name: order-service
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  cooldownPeriod: 60
+  pollingInterval: 15
+  triggers:
+    - type: memory
+      metricType: Utilization
+      metadata:
+        value: "80"

@@ -1,0 +1,50 @@
+autoScaling:
+  maxReplicas: 3
+  minReplicas: 1
+  targetCPUUtilizationPercentage: 80
+customResourceDefinitions:
+  create: true
+image:
+  pullPolicy: IfNotPresent
+  repository: ghcr.io/kedacore/keda
+  tag: 2.11.0
+metricsServer:
+  args:
+  - --kubelet-insecure-tls
+  - --metric-resolution=15s
+  enabled: true
+  image:
+    pullPolicy: IfNotPresent
+    repository: k8s.gcr.io/metrics-server/metrics-server
+    tag: v0.6.4
+nodeSelector: {}
+prometheus:
+  enabled: false
+rbac:
+  create: true
+resources:
+  metricsAdapter:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  operator:
+    limits:
+      cpu: 250m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+serviceAccount:
+  create: true
+  name: keda-operator
+tolerations:
+- effect: NoSchedule
+  key: control-plane
+  operator: Equal
+  value: amdp
+webhooks:
+  certManager: false
+  enabled: true

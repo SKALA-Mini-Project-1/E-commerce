@@ -2,10 +2,10 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ecommerce-lab-config
-  namespace: ecommerce-lab
+  namespace: ecommerce
 data:
-  APP_HOST: mall.example.com
-  INGRESS_CLASS_NAME: nginx
+  APP_HOST: skala3-cloud1-team4.cloud.skala-ai.com
+  INGRESS_CLASS_NAME: alb
   SPRING_PROFILES_ACTIVE: mariadb
   JAVA_OPTS: "-XX:InitialRAMPercentage=25.0 -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
   MARIADB_HOST: mariadb
