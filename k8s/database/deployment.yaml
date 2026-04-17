@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mariadb
-  namespace: ecommerce-lab
+  namespace: ecommerce
   labels:
     app.kubernetes.io/name: mariadb
 spec:
@@ -27,20 +27,20 @@ spec:
             - name: MARIADB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
+                  name: ecommerce-lab-secret
                   key: MARIADB_ROOT_PASSWORD
             - name: MARIADB_DATABASE
               value: user_service_db
             - name: MARIADB_USER
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
-                  key: MARIADB_APP_USERNAME
+                  name: ecommerce-lab-secret
+                  key: MARIADB_USERNAME
             - name: MARIADB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mariadb-secret
-                  key: MARIADB_APP_PASSWORD
+                  name: ecommerce-lab-secret
+                  key: MARIADB_PASSWORD
           readinessProbe:
             tcpSocket:
               port: mysql

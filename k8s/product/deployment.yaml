@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: product-service
-  namespace: ecommerce-lab
+  namespace: ecommerce
   labels:
     app.kubernetes.io/name: product-service
 spec:
@@ -27,7 +27,7 @@ spec:
       priorityClassName: ecommerce-high-priority
       containers:
         - name: product-service
-          image: REPLACE_ME/product-service:latest
+          image: amdp-registry.skala-ai.com/skala26a-cloud/team4-product-service:2026.04.17-v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

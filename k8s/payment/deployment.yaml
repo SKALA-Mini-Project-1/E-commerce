@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: payment-service
-  namespace: ecommerce-lab
+  namespace: ecommerce
   labels:
     app.kubernetes.io/name: payment-service
 spec:
@@ -34,7 +34,7 @@ spec:
             - until curl -fsS http://order-service:8080/actuator/health/readiness; do echo waiting for order-service; sleep 5; done
       containers:
         - name: payment-service
-          image: REPLACE_ME/payment-service:latest
+          image: amdp-registry.skala-ai.com/skala26a-cloud/team4-payment-service:2026.04.17-v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

@@ -1,25 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: frontend-ingress
-  namespace: ecommerce-lab
+  name: ecommerce-api-ingress
+  namespace: ecommerce
 spec:
-  ingressClassName: nginx
-  tls:
-    - hosts:
-        - mall.example.com
-      secretName: shopping-mall-tls
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
-          - path: /frontend
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend-stable
-                port:
-                  number: 80
           - path: /api/users
             pathType: Prefix
             backend:
@@ -53,14 +42,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: user-swagger-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /user/swagger(/|$)(.*)
@@ -75,14 +64,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: user-actuator-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /user/actuator(/|$)(.*)
@@ -97,14 +86,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: product-swagger-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /product/swagger(/|$)(.*)
@@ -119,14 +108,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: product-actuator-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /product/actuator(/|$)(.*)
@@ -141,14 +130,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: order-swagger-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /order/swagger(/|$)(.*)
@@ -163,14 +152,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: order-actuator-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /order/actuator(/|$)(.*)
@@ -185,14 +174,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: payment-swagger-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /payment/swagger(/|$)(.*)
@@ -207,14 +196,14 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: payment-actuator-ingress
-  namespace: ecommerce-lab
+  namespace: ecommerce
   annotations:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: nginx
+  ingressClassName: alb
   rules:
-    - host: mall.example.com
+    - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
         paths:
           - path: /payment/actuator(/|$)(.*)
