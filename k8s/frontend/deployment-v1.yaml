@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-v1
-  namespace: ecommerce-lab
+  namespace: ecommerce
   labels:
     app.kubernetes.io/name: frontend
     app.kubernetes.io/version: v1
@@ -24,17 +24,17 @@ spec:
         app.kubernetes.io/version: v1
     spec:
       priorityClassName: ecommerce-high-priority
-      initContainers:
-        - name: wait-for-user-api
-          image: curlimages/curl:8.10.1
-          command:
-            - sh
-            - -c
-            - until curl -fsS http://user-service:8080/actuator/health/readiness; do echo waiting for user-service; sleep 5; done
+      # initContainers:
+      #   - name: wait-for-user-api
+      #     image: curlimages/curl:8.10.1
+      #     command:
+      #       - sh
+      #       - -c
+      #       - until curl -fsS http://user-service:8080/actuator/health/readiness; do echo waiting for user-service; sleep 5; done
       containers:
         - name: frontend
-          image: REPLACE_ME/frontend:v1
-          imagePullPolicy: IfNotPresent
+          image: amdp-registry.skala-ai.com/skala26a-cloud/team4-frontend:2026.04.17-v1
+          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 80
