@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://${MARIADB_HOST:mariadb}:${MARIADB_PORT:3306}/${ORDER_SERVICE_DB:order_service_db}?allowMultiQueries=true
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: ${MARIADB_USERNAME:cloud}
+    password: ${MARIADB_PASSWORD:Skala25a!23$}
+
+  jpa:
+    open-in-view: true
+    generate-ddl: true
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update  # 무조건 테블이 있으면 삭제후 생성은 create (create-drop | update | create | none)
+    show-sql: false
+
+logging:
+  level:
+    root: INFO
+
+springdoc:
+  swagger-ui:
+    path: /swagger/swagger-ui
+  api-docs:
+    path: /swagger/swagger-docs
+
+clients:
+  user-service:
+    base-url: ${USER_SERVICE_BASE_URL:http://user-service:8080}
+  product-service:
+    base-url: ${PRODUCT_SERVICE_BASE_URL:http://product-service:8080}
