@@ -5,7 +5,7 @@ metadata:
   namespace: ecommerce
 data:
   APP_HOST: skala3-cloud1-team4.cloud.skala-ai.com
-  INGRESS_CLASS_NAME: alb
+  INGRESS_CLASS_NAME: nginx
   SPRING_PROFILES_ACTIVE: mariadb
   JAVA_OPTS: "-XX:InitialRAMPercentage=25.0 -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
   MARIADB_HOST: mariadb
