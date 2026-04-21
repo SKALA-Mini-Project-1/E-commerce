@@ -4,7 +4,7 @@ metadata:
   name: ecommerce-api-ingress
   namespace: ecommerce
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -47,7 +47,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -69,7 +69,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -91,7 +91,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -113,7 +113,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -135,7 +135,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -157,7 +157,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -179,7 +179,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /swagger/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
@@ -201,7 +201,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/rewrite-target: /actuator/$2
 spec:
-  ingressClassName: alb
+  ingressClassName: nginx
   rules:
     - host: skala3-cloud1-team4.cloud.skala-ai.com
       http:
