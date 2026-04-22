@@ -25,18 +25,18 @@ rbac:
 resources:
   metricsAdapter:
     limits:
-      cpu: 100m
+      cpu: 75m
       memory: 128Mi
+    requests:
+      cpu: 25m
+      memory: 32Mi
+  operator:
+    limits:
+      cpu: 150m
+      memory: 256Mi
     requests:
       cpu: 50m
       memory: 64Mi
-  operator:
-    limits:
-      cpu: 250m
-      memory: 256Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
 serviceAccount:
   create: true
   name: keda-operator

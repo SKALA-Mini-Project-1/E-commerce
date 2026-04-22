@@ -28,6 +28,7 @@ public class OrderService {
     private final CustomerOrderRepository customerOrderRepository;
     private final UserClient userClient;
     private final ProductClient productClient;
+    private final OutboxEventService outboxEventService;
 
     public List<CustomerOrder> findAll() {
         return customerOrderRepository.findAll();
@@ -66,7 +67,9 @@ public class OrderService {
 
             order.replaceItems(toOrderItems(resolvedItems));
             order.setTotalAmount(calculateTotal(order.getItems()));
-            return customerOrderRepository.save(order);
+            CustomerOrder savedOrder = customerOrderRepository.save(order);
+            outboxEventService.enqueueOrderCreated(savedOrder);
+            return savedOrder;
         } catch (RuntimeException e) {
             compensateReservedStocks(reservedStocks);
             throw e;

@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: payment-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: payment-service
@@ -55,8 +55,8 @@ spec:
             periodSeconds: 20
           resources:
             requests:
-              cpu: "350m"
-              memory: "512Mi"
+              cpu: "150m"
+              memory: "256Mi"
             limits:
               cpu: "350m"
               memory: "512Mi"
