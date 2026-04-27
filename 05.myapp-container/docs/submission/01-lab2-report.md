@@ -275,6 +275,9 @@ aggregate_id  event_type      payload_preview
 4             ORDER_CREATED   {"orderId":4,"orderNumber":"ORD-695DAAF1","userId":1,"status":"PAYMENT_PENDING","totalAmount":"19000.00","createdAt":"2026-04-21T16:38:52.441314458","items":[{"productId":1,"productName":"텀블러","quantity":1,"unitPrice":"19000.00","subtotal":"19000.00"}]}
 ```
 
+![img1](lab2-img/img1.png)
+
+
 ### 7.4 Connector 실행 확인
 
 Kafka Connect 에 Debezium source connector 를 등록한 뒤,
@@ -340,6 +343,9 @@ schemahistory.orderdb
 
 Kafka 메시지에는 `aggregate_id`, `aggregate_type`, `event_type`, `payload` 와 함께 Debezium source metadata 가 포함되어 있었다.
 
+![img2](lab2-img/img2.png)
+Kafka 에 생성된 Outbox CDC 토픽`
+
 ### 7.6 Consumer 수신 확인
 
 별도 `event-consumer` 서비스에서 topic 을 구독하고 로그를 출력하도록 구현했다.
@@ -360,6 +366,30 @@ Kafka 메시지에는 `aggregate_id`, `aggregate_type`, `event_type`, `payload` 
 {"topic":"orderdb.order_service_db.outbox_event","partition":0,"offset":3,"value":{"payload":{"after":{"aggregate_id":"7","aggregate_type":"order","event_type":"ORDER_CREATED","payload":"{\"orderId\":7,\"orderNumber\":\"ORD-FA31DC0A\",\"userId\":1,\"status\":\"PAYMENT_PENDING\",\"totalAmount\":\"19000.00\",\"createdAt\":\"2026-04-21T17:17:48.935629471\",\"items\":[{\"productId\":1,\"productName\":\"텀블러\",\"quantity\":1,\"unitPrice\":\"19000.00\",\"subtotal\":\"19000.00\"}]}"}}}}
 ```
 
+![img3](image.png)
+event-consumer 의 Kafka 이벤트 수신 로그`
+
+### 7.7 Kubernetes MVP 배포 검증
+
+로컬 환경 검증 이후 동일한 흐름을 `ecommerce` 네임스페이스의 Kubernetes 환경으로 확장하여 최소 MVP 형태로 재검증했다.
+
+최종적으로 확인한 항목은 다음과 같다.
+
+- `mariadb`, `order-service`, `kafka`, `kafka-connect`, `event-consumer`, `zookeeper` 가 모두 정상 기동
+- `register-order-outbox-connector` Job 완료
+- `order-outbox-source` connector 와 task 가 모두 `RUNNING`
+- 클러스터 내부 `order-service` 주문 생성 성공
+- `event-consumer` 가 Kafka broker 연결 및 이벤트 소비 가능 상태 도달
+
+Kubernetes 검증은 로컬 Compose 검증과 달리 실제 k8s 리소스(`Deployment`, `Service`, `Job`)를 배포하고, 내부 DNS와 서비스 이름(`kafka:9092`, `kafka-connect:8083`)을 기준으로 CDC 파이프라인을 연결했다는 점에서 의미가 있다.
+
+![img4](image.png)
+ecommerce 네임스페이스의 Kubernetes Pod 기동 상태`
+
+![img5](image-1.png)
+Kubernetes 환경의 Kafka Connect connector 상태`
+
+
 ## 8. 트러블슈팅
 
 실습 2를 진행하면서 발생한 주요 트러블 슈팅과 수정 내용은 다음과 같다.
@@ -372,6 +402,9 @@ Kafka 메시지에는 `aggregate_id`, `aggregate_type`, `event_type`, `payload` 
 | CDC 사전 조건 | Debezium connector 등록 후 topic 이 생성되지 않음 | MariaDB 에서 binlog 가 꺼져 있고 format 이 CDC 친화적으로 설정되지 않음 | `docker-compose.lab2.yml` 의 MariaDB 실행 옵션 | `--log-bin=mysql-bin`, `--binlog-format=ROW`, `--binlog-row-image=FULL`, `--server-id=223344` 추가 | `log_bin = ON`, `binlog_format = ROW`, `binlog_row_image = FULL` 을 확인했고 CDC 수행이 가능해졌다. |
 | Debezium snapshot 권한 | connector 는 `RUNNING` 이지만 실제 snapshot 단계에서 계속 재시도 | Debezium 계정에 `RELOAD`, replication 관련 권한이 부족함 | MariaDB 권한 설정 및 초기화 SQL | `cloud` 계정에 `RELOAD`, `REPLICATION SLAVE`, `REPLICATION CLIENT`, `LOCK TABLES` 권한 추가 | connector 가 실제로 `outbox_event` 를 읽어 Kafka topic 을 생성하고 메시지를 적재했다. |
 | Consumer 동작 | 초기 `event-consumer` 로그가 `[connected]` 만 반복되고 메시지 수신 로그가 보이지 않음 | consumer 루프가 연결을 반복 생성하는 형태라 안정적으로 polling 하지 못함 | `services/event-consumer/consumer.py` | `for message in consumer` 방식 대신 `poll(timeout_ms=3000)` 기반 루프로 수정 | snapshot 이벤트와 신규 생성 이벤트(`op = c`) 모두 정상 수신하는 것을 확인했다. |
+| Kubernetes Kafka | Kafka pod 기동 시 `port is deprecated` 오류로 CrashLoop 발생 | Kubernetes service link 가 주입한 `KAFKA_*` 환경변수와 이미지 내부 설정이 충돌함 | `k8s/lab2/kafka-deployment.yaml` | `enableServiceLinks: false` 적용 | Kafka broker 가 정상 기동했고 topic 생성까지 확인했다. |
+| Kubernetes MariaDB | MariaDB 재배포 시 `Multi-Attach` 오류 또는 root 실행 관련 기동 실패 발생 | RWO PVC 를 RollingUpdate 로 교체하려 했고, entrypoint 대신 command 를 잘못 덮어씀 | `k8s/database/deployment.yaml` | `command` 대신 `args` 사용, 배포 전략을 `Recreate` 로 변경 | MariaDB pod 가 정상 기동했고 init job 도 성공했다. |
+| Kubernetes Kafka Connect | Debezium 플러그인 스캔 중 readiness/liveness probe 가 먼저 실패하여 `CrashLoopBackOff` 발생 | Kafka Connect 초기 기동 시간이 긴데 probe 설정이 너무 공격적이었음 | `k8s/lab2/kafka-connect-deployment.yaml` | `startupProbe` 추가, readiness/liveness 지연 시간 증가 | Kafka Connect pod 가 안정적으로 `1/1 Running` 상태가 되었고 connector 등록이 가능해졌다. |
 
 ## 9. 최종 결과
 
@@ -380,5 +413,6 @@ Kafka 메시지에는 `aggregate_id`, `aggregate_type`, `event_type`, `payload` 
 - Debezium Connector 가 이를 CDC 로 감지
 - Kafka topic 으로 메시지가 발행
 - 별도 consumer 가 이를 수신
+- 동일한 흐름을 Kubernetes `ecommerce` 네임스페이스에서도 재현하여 MVP 배포 검증 완료
 
 `주문 생성 시나리오에 대한 EDA MVP` 를 성공적으로 구현하고 검증 완료했다.
