@@ -1,0 +1,22 @@
+{
+  "name": "order-outbox-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "database.hostname": "mariadb",
+    "database.port": "3306",
+    "database.user": "cloud",
+    "database.password": "Skala25a!23$",
+    "database.server.id": "5401",
+    "topic.prefix": "orderdb",
+    "database.include.list": "order_service_db",
+    "table.include.list": "order_service_db.outbox_event",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka:29092",
+    "schema.history.internal.kafka.topic": "schemahistory.orderdb",
+    "snapshot.mode": "initial",
+    "include.schema.changes": "false",
+    "tombstones.on.delete": "false",
+    "decimal.handling.mode": "string",
+    "time.precision.mode": "connect"
+  }
+}
