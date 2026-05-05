@@ -10,4 +10,18 @@ spec:
     - name: mysql
       port: 3306
       targetPort: mysql
-  type: ClusterIP
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb-headless
+  namespace: ecommerce
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/name: mariadb
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: mysql
