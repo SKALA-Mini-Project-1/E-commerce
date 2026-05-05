@@ -1,6 +1,6 @@
 # CDC Workspace
 
-이 디렉터리는 실습 2의 CDC 관련 설정을 모아두는 위치다.
+이 디렉터리는 CDC 관련 설정을 모아두는 위치다.
 
 권장 구성:
 
@@ -15,9 +15,9 @@
 - `scripts/register-order-outbox-connector.sh`
 - `scripts/check-connectors.sh`
 
-## Lab 2 권장 실행 방식
+## 권장 실행 방식
 
-기존 서비스 compose 를 직접 수정하지 않고, 실습 2 전용 확장 compose 를 겹쳐서 실행한다.
+기존 서비스 compose 를 직접 수정하지 않고, CDC 전용 확장 compose 를 겹쳐서 실행한다.
 
 기본 원칙:
 
@@ -29,7 +29,7 @@
 예시:
 
 ```bash
-cd /Users/yangyewon/workspace/shopping-mall-k8s-lab/E-commerce/05.myapp-container
+cd /Users/yangyewon/workspace/shopping-mall-k8s-lab/E-commerce/app
 docker compose -f docker-compose.yml -f docker-compose.lab2.yml up -d --build
 ```
 
@@ -82,8 +82,8 @@ MariaDB binlog 가 켜져 있어야 Debezium 이 동작한다.
 예시 확인 명령:
 
 ```bash
-docker exec 05myapp-container-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'log_bin';"
-docker exec 05myapp-container-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'binlog_format';"
+docker exec app-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'log_bin';"
+docker exec app-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'binlog_format';"
 ```
 
 권장 기대값:
@@ -118,10 +118,10 @@ MariaDB 컨테이너를 recreate 해야 한다.
 
 아래 순서대로 실행하면 팀원도 같은 로컬 환경을 재현할 수 있다.
 
-### 1. 기본 스택 + 실습 2 확장 스택 기동
+### 1. 기본 스택 + CDC 확장 스택 기동
 
 ```bash
-cd /Users/yangyewon/workspace/shopping-mall-k8s-lab/E-commerce/05.myapp-container
+cd /Users/yangyewon/workspace/shopping-mall-k8s-lab/E-commerce/app
 docker compose -f docker-compose.yml -f docker-compose.lab2.yml up -d --build
 ```
 
@@ -135,8 +135,8 @@ curl -s http://localhost:18093/connectors
 ### 3. MariaDB CDC 설정 확인
 
 ```bash
-docker exec 05myapp-container-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'log_bin';"
-docker exec 05myapp-container-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'binlog_format';"
+docker exec app-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'log_bin';"
+docker exec app-mariadb-1 mariadb -uroot -prootpass -e "show variables like 'binlog_format';"
 ```
 
 ### 4. Connector 등록
@@ -163,8 +163,8 @@ curl -s -X POST http://localhost:18083/api/orders \
 ### 6. Topic 및 consumer 확인
 
 ```bash
-docker exec 05myapp-container-kafka-1 kafka-topics --bootstrap-server kafka:29092 --list
-docker logs --tail 100 05myapp-container-event-consumer-1
+docker exec app-kafka-1 kafka-topics --bootstrap-server kafka:29092 --list
+docker logs --tail 100 app-event-consumer-1
 ```
 
 기대 결과:
